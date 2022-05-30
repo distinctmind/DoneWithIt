@@ -59,8 +59,8 @@ function Picker({
             renderItem={({ item }) => (
               <PickerItemComponent
                 item={item}
-                label={item.label}
                 onPress={() => {
+                  console.log("HERE");
                   setModalVisible(false);
                   onSelectItem(item);
                 }}
