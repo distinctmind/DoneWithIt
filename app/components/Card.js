@@ -1,22 +1,33 @@
 import React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+  Image,
+} from "react-native";
 
 import colors from "../config/colors";
 import AppText from "./AppText";
 
-function Card({ image, title, subtitle }) {
+function Card({ imageUrl, title, subtitle, onPress }) {
   return (
-    <View style={styles.card}>
-      <Image source={image} style={styles.image} resizeMode={"cover"} />
-      <View style={styles.detailsContainer}>
-        <AppText numberOfLines={1} style={styles.title}>
-          {title}
-        </AppText>
-        <AppText numberOfLines={2} style={styles.subtitle}>
-          {subtitle}
-        </AppText>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={styles.card}>
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.image}
+          resizeMode={"cover"}
+        />
+        <View style={styles.detailsContainer}>
+          <AppText numberOfLines={1} style={styles.title}>
+            {title}
+          </AppText>
+          <AppText numberOfLines={2} style={styles.subtitle}>
+            {subtitle}
+          </AppText>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -40,7 +51,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    heigth: 200,
+    height: 200,
     flex: 2,
   },
 });

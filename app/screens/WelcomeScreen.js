@@ -2,10 +2,9 @@ import React from "react";
 import { View, Text, ImageBackground, Image, StyleSheet } from "react-native";
 import Button from "../components/Button";
 
-// import LoginButton from "../components/LoginButton";
-// import RegisterButton from "../components/RegisterButton";
+import routes from "../navigation/routes";
 
-function WelcomeScreen(props) {
+function WelcomeScreen({ navigation }) {
   return (
     <ImageBackground
       source={require("../assets/background.jpg")}
@@ -18,15 +17,16 @@ function WelcomeScreen(props) {
         <Text style={styles.heroText}>Sell What You Don't Need</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="login" onPress={() => console.log("tapped")} />
+        <Button
+          title="login"
+          onPress={() => navigation.navigate(routes.LOGIN)}
+        />
         <Button
           title="register"
-          onPress={() => console.log("tapped")}
+          onPress={() => navigation.navigate(routes.REGISTER)}
           color="secondary"
         />
       </View>
-      {/* <LoginButton /> */}
-      {/* <RegisterButton /> */}
     </ImageBackground>
   );
 }

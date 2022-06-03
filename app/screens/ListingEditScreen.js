@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import * as Yup from "yup";
 
 import CategoryPickerItem from "../components/CategoryPickerItem";
+import listingsApi from "../api/listings";
 import Screen from "../components/Screen";
 import useLocation from "../hooks/useLocation";
 
@@ -13,6 +14,8 @@ import {
   FormPicker,
   SubmitButton,
 } from "../components/forms";
+
+import UploadScreen from "./UploadScreen";
 
 const categories = [
   {
@@ -54,12 +57,34 @@ const initialValues = {
 
 function ListingEditScreen(props) {
   const location = useLocation();
+  const [progress, setProgress] = useState(0);
+  const [uploadVisible, setUploadVisible] = useState(false);
+
+  const handleSubmit = async (listing, { resetForm }) => {
+    setProgress(0);
+    setUploadVisible(true);
+    const result = await listingsApi.addListing(
+      { ...listing, location },
+      (progress) => setProgress(progress)
+    );
+
+    if (!result.ok) {
+      setUploadVisible(false);
+      return alert("Could not save the listing.");
+    }
+    resetForm();
+  };
 
   return (
     <Screen style={styles.container}>
+      <UploadScreen
+        progress={progress}
+        visible={uploadVisible}
+        onDone={() => setUploadVisible(false)}
+      />
       <Form
         initialValues={initialValues}
-        onSubmit={(values) => console.log(location)}
+        onSubmit={handleSubmit}
         validationSchema={validationSchema}
       >
         <FormImagePicker name="images" />

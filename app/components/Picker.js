@@ -60,7 +60,6 @@ function Picker({
               <PickerItemComponent
                 item={item}
                 onPress={() => {
-                  console.log("HERE");
                   setModalVisible(false);
                   onSelectItem(item);
                 }}

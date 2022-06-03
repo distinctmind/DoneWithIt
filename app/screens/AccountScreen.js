@@ -10,17 +10,22 @@ import colors from "../config/colors";
 const acountItems = [
   {
     title: "My Listings",
-    iconName: "format-list-bulleted",
-    iconColor: colors.primary,
+    icon: {
+      name: "format-list-bulleted",
+      backgroundColor: colors.primary,
+    },
   },
   {
     title: "My Messages",
-    iconName: "email",
-    iconColor: colors.secondary,
+    icon: {
+      name: "email",
+      backgroundColor: colors.secondary,
+    },
+    targetScreen: "Messages",
   },
 ];
 
-function AccountScreen(props) {
+function AccountScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Screen>
@@ -40,13 +45,15 @@ function AccountScreen(props) {
                 title={item.title}
                 IconComponent={
                   <Icon
-                    name={item.iconName}
+                    name={item.icon.name}
                     size={45}
-                    backgroundColor={item.iconColor}
+                    backgroundColor={item.icon.backgroundColor}
                     iconColor="white"
                   />
                 }
-                onPress={() => console.log("pressed account item", item)}
+                onPress={() => {
+                  navigation.navigate(item.targetScreen);
+                }}
               />
             )}
             ItemSeparatorComponent={ListItemSeparator}

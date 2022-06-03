@@ -1,45 +1,58 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 
+import ActivityIndicator from "../components/ActivityIndicator";
+import AppText from "../components/AppText";
+import Button from "../components/Button";
 import Card from "../components/Card";
-import Screen from "../components/Screen";
 import colors from "../config/colors";
+import listingsApi from "../api/listings";
+import routes from "../navigation/routes";
+import Screen from "../components/Screen";
+import useApi from "../hooks/useApi";
 
-const listings = [
-  {
-    id: 1,
-    title: "Red jacket for sale",
-    price: 100,
-    image: require("../assets/jacket.jpg"),
-  },
-  {
-    id: 2,
-    title: "Couch in great condition",
-    price: 1000,
-    image: require("../assets/couch.jpg"),
-  },
-];
+function ListingsScreen({ navigation }) {
+  const {
+    data: listings,
+    error,
+    loading,
+    request: loadListings,
+  } = useApi(listingsApi.getListings);
 
-function ListingsScreen(props) {
+  useEffect(() => {
+    loadListings();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Screen>
-        <FlatList
-          style={styles.list}
-          data={listings}
-          keyExtractor={(listing) => listing.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.listing}>
-              <Card
-                image={item.image}
-                title={item.title}
-                subtitle={"$" + item.price}
-              />
-            </View>
-          )}
-        ></FlatList>
-      </Screen>
-    </View>
+    <Screen style={styles.container}>
+      {error && (
+        <>
+          <AppText>Couldn't retrieve the listings.</AppText>
+          <Button title="Retry" onPress={() => loadListings()} />
+        </>
+      )}
+      <ActivityIndicator visible={loading} />
+      <FlatList
+        style={styles.list}
+        data={listings}
+        keyExtractor={(listing) => listing.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.listing}>
+            <Card
+              title={item.title}
+              subtitle={"$" + item.price}
+              imageUrl={item.images[0].url}
+              onPress={() => {
+                console.log(item);
+                console.log(item.images);
+                console.log(item.images[0].url);
+                navigation.navigate(routes.LISTING_DETAILS, item);
+              }}
+            />
+          </View>
+        )}
+      ></FlatList>
+    </Screen>
   );
 }
 
