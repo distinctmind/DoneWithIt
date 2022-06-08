@@ -1,11 +1,12 @@
 import React from "react";
 import { StyleSheet, View, FlatList } from "react-native";
 
+import colors from "../config/colors";
 import Icon from "../components/Icon";
 import ListItem from "../components/lists/ListItem";
 import ListItemSeparator from "../components/lists/ListItemSeparator";
 import Screen from "../components/Screen";
-import colors from "../config/colors";
+import useAuth from "../auth/useAuth";
 
 const acountItems = [
   {
@@ -26,14 +27,16 @@ const acountItems = [
 ];
 
 function AccountScreen({ navigation }) {
+  const { user, logout } = useAuth();
+
   return (
     <View style={styles.container}>
       <Screen>
         <View style={styles.userDetails}>
           <ListItem
             image={require("../assets/mosh.jpg")}
-            title="Mosh Hamedani"
-            subtitle="programmingwithmosh@gmail.com"
+            title={user.name}
+            subtitle={user.email}
           />
         </View>
         <View style={styles.mainArea}>
@@ -70,7 +73,7 @@ function AccountScreen({ navigation }) {
                 iconColor="white"
               />
             }
-            onPress={() => console.log("pressed account item")}
+            onPress={() => logout()}
           />
         </View>
       </Screen>

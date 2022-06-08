@@ -5,17 +5,14 @@ export default useApi = (apiFunc) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const request = async () => {
+  const request = async (...args) => {
     setLoading(true);
-    const response = await apiFunc();
+    const response = await apiFunc(...args);
     setLoading(false);
 
-    //There is error in database response, update state variable error so user is notified.
-    if (!response.ok) return setError(true);
-
-    //Database returns successfully, set data accordingly
-    setError(false);
     setData(response.data);
+    setError(!response.ok);
+    return response;
   };
   return { data, error, loading, request };
 };

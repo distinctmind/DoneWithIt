@@ -24,33 +24,35 @@ function ListingsScreen({ navigation }) {
   }, []);
 
   return (
-    <Screen style={styles.container}>
-      {error && (
-        <>
-          <AppText>Couldn't retrieve the listings.</AppText>
-          <Button title="Retry" onPress={() => loadListings()} />
-        </>
-      )}
+    <>
       <ActivityIndicator visible={loading} />
-      <FlatList
-        style={styles.list}
-        data={listings}
-        keyExtractor={(listing) => listing.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.listing}>
-            <Card
-              title={item.title}
-              subtitle={"$" + item.price}
-              imageUrl={item.images[0].url}
-              onPress={() => {
-                navigation.navigate(routes.LISTING_DETAILS, item);
-              }}
-              thumbnailUrl={item.images[0].thumbnailUrl}
-            />
-          </View>
+      <Screen style={styles.container}>
+        {error && (
+          <>
+            <AppText>Couldn't retrieve the listings.</AppText>
+            <Button title="Retry" onPress={() => loadListings()} />
+          </>
         )}
-      ></FlatList>
-    </Screen>
+        <FlatList
+          style={styles.list}
+          data={listings}
+          keyExtractor={(listing) => listing.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.listing}>
+              <Card
+                title={item.title}
+                subtitle={"$" + item.price}
+                imageUrl={item.images[0].url}
+                onPress={() => {
+                  navigation.navigate(routes.LISTING_DETAILS, item);
+                }}
+                thumbnailUrl={item.images[0].thumbnailUrl}
+              />
+            </View>
+          )}
+        ></FlatList>
+      </Screen>
+    </>
   );
 }
 
