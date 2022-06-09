@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { LogBox } from "react-native";
-import AppLoading from "expo-app-loading";
+import { LogBox, View } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
 
 import authStorage from "./app/auth/storage";
 import AppNavigator from "./app/navigation/AppNavigator";
@@ -18,27 +18,45 @@ export default function App() {
   ]);
 
   const [user, setUser] = useState();
-  const [isReady, setIsReady] = useState(false);
+  const [appIsReady, setAppIsReady] = useState(false);
 
   const restoreUser = async () => {
     const user = await authStorage.getUser();
     if (user) setUser(user);
   };
 
-  if (!isReady)
-    return (
-      <AppLoading
-        startAsync={restoreUser}
-        onFinish={() => setIsReady(true)}
-        onError={(error) => console.log(error)}
-      />
-    );
+  useEffect(() => {
+    const prepare = async () => {
+      try {
+        console.log("going to display splash screen");
+        // Keep the splash screen visible while we fetch resources
+        await SplashScreen.preventAutoHideAsync();
+        await restoreUser();
+      } catch (e) {
+        console.log(e);
+      } finally {
+        console.log("done restoring user, now going to set app is ready");
+        setAppIsReady(true);
+      }
+    };
+    prepare();
+  }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    console.log("in layout root view, about to hide splash screen");
+    if (appIsReady) await SplashScreen.hideAsync();
+  }, [appIsReady]);
+
+  if (!appIsReady) return null;
+
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      <OfflineNotice />
-      <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        {user ? <AppNavigator /> : <AuthNavigator />}
-      </NavigationContainer>
-    </AuthContext.Provider>
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <AuthContext.Provider value={{ user, setUser }}>
+        <OfflineNotice />
+        <NavigationContainer ref={navigationRef} theme={navigationTheme}>
+          {user ? <AppNavigator /> : <AuthNavigator />}
+        </NavigationContainer>
+      </AuthContext.Provider>
+    </View>
   );
 }
