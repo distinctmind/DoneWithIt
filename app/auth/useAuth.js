@@ -12,9 +12,7 @@ export default useAuth = () => {
 
   const login = async (email, password) => {
     const result = await client.post("/auth", { email, password });
-    if (!result.ok) return setLoginError(true);
-    setLoginError(false);
-
+    setLoginError(!result.ok);
     // storeUser(result.data);
     return result;
   };
@@ -22,10 +20,11 @@ export default useAuth = () => {
   const register = async (registerInfo) => {
     const { name, email, password } = registerInfo;
     const result = await client.post("/users", { name, email, password });
-    if (!result.ok) return setRegisterError(true);
-    setRegisterError(false);
-
-    return await login(result.data.email, result.data.password);
+    console.log("Just registered user, here is the result: ", result);
+    setRegisterError(!result.ok);
+    return result.ok
+      ? await login(result.data.email, result.data.password)
+      : result;
   };
 
   const storeUser = (authToken) => {

@@ -21,7 +21,7 @@ function LoginScreen() {
 
   const handleLogin = async ({ email, password }) => {
     const result = await login(email, password);
-    storeUser(result.data);
+    if (result.ok) storeUser(result.data);
   };
 
   return (

@@ -10,6 +10,7 @@ import listingsApi from "../api/listings";
 import routes from "../navigation/routes";
 import Screen from "../components/Screen";
 import useApi from "../hooks/useApi";
+import { ErrorMessage } from "../components/forms";
 
 function ListingsScreen({ navigation }) {
   const {
@@ -28,10 +29,13 @@ function ListingsScreen({ navigation }) {
       <ActivityIndicator visible={loading} />
       <Screen style={styles.container}>
         {error && (
-          <>
-            <AppText>Couldn't retrieve the listings.</AppText>
+          <View style={styles.errorContainer}>
+            <ErrorMessage
+              error="Couldn't retrieve the listings."
+              visible={true}
+            />
             <Button title="Retry" onPress={() => loadListings()} />
-          </>
+          </View>
         )}
         <FlatList
           style={styles.list}
@@ -57,9 +61,15 @@ function ListingsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  padding: {
+    margin: 30,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.light,
+  },
+  errorContainer: {
+    alignItems: "center",
   },
   list: {
     padding: 20,

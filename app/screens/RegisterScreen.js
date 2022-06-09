@@ -25,7 +25,8 @@ function RegisterScreen(props) {
 
   const handleRegister = async (registerInfo) => {
     const result = await registerApi.request(registerInfo);
-    storeUser(result.data);
+    console.log(result);
+    if (result.ok) storeUser(result.data);
   };
 
   return (
